@@ -12,8 +12,8 @@ export const register = async (req, res, next) => {
     });
     await newUser.save();
     res.status(201).send("a new user has been created.");
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    next(err);
   }
 };
 
@@ -23,11 +23,12 @@ export const login = async (req, res, next) => {
     const err = new Error();
     err.status = 404;
     err.message = "User not found";
+
     if (!user) return next(createError(404, "User not found"));
 
     const isCorrect = bcrypt.compareSync(req.body.password, user.password);
     if (!isCorrect)
-      return res.status(400).send("incorrect username or password!");
+      return next(createError(400, "Invalid username or password"));
 
     const token = jwt.sign(
       {
@@ -45,8 +46,16 @@ export const login = async (req, res, next) => {
       .status(200)
       .send(info);
   } catch (error) {
-    res.status(500).send("something went wrong");
+    next(err);
   }
 };
 
-export const logout = async (req, res) => {};
+export const logout = async (req, res) => {
+  res
+    .clearCookie("accesstoken", {
+      sameSite: "none",
+      secure: true,
+    })
+    .status(200)
+    .send("User has been looged out.");
+};
