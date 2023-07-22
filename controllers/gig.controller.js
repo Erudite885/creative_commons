@@ -1,6 +1,5 @@
-import createError from "../utils/createError";
+import createError from "../utils/createError.js";
 import Gig from "../models/gig.model.js";
-import gigModel from "../models/gig.model.js";
 
 export const createGig = async (req, res, next) => {
   if (!req.isSeller)
@@ -49,7 +48,7 @@ export const getGigs = async (req, res, next) => {
     ...(q.userId && { userId: q.userId }),
     ...(q.cat && { cat: q.cat }),
     ...((q.min || q.max) && {
-      price: { ...(q.min && { $gt: q.min }), ...(q.max && { $gt: q.max }) },
+      price: { ...(q.min && { $gt: q.min }), ...(q.max && { $lt: q.max }) },
     }),
     ...(q.search && { title: { $regex: q.search, $options: "i" } }),
   };
