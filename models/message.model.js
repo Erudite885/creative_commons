@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 
 const MesssageSchema = new Schema(
   {
-    ConversationId: { type: String, required: true },
+    conversationId: { type: String, required: true },
     userId: { type: String, required: true },
     desc: { type: String, required: true },
   },
